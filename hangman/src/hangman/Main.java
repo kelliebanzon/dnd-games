@@ -6,12 +6,23 @@ import java.util.Scanner;
 public class Main {
 	
 	static boolean play = true;
-	static boolean[] guesses = new boolean[128];
+	static boolean[] guesses = new boolean[128]; //TODO: shorten guesses to an array of length 26
 	static boolean complete = false;
 	static boolean win = false;
 	static boolean quit = false;
+	static int numWrong = 0;
+	static int maxWrong = 6; //TODO: update maxWrong according to difficulty
 	static Scanner sc = new Scanner(System.in);
 	static char[] key;
+	static boolean[] inKey = new boolean[91]; //TODO: shorten inKey to an array of length 26
+	
+	private static void initiateInKey(){
+		char lowercase;
+		for (int i = 0; i < key.length; i++){
+			lowercase = Character.toUpperCase(key[i]);
+			inKey[(int)lowercase] = true;
+		}
+	}
 	
 	private static void promptGuess(){
 		String temp;
@@ -29,7 +40,7 @@ public class Main {
 					quit = true;
 					good = true;
 				}
-				else{
+				else{	/* if the user guesses the full word/phrase */
 					checkComplete(temp);
 					good = true;
 				}
@@ -43,6 +54,9 @@ public class Main {
 				else{
 					guesses[(int)lowercase] = true;
 					guesses[(int)uppercase] = true;
+					if (!inKey[(int)uppercase]){
+						numWrong++;
+					}
 					good = true;
 				}
 			}
@@ -53,14 +67,21 @@ public class Main {
 		char[] temp = guess.toCharArray();
 		if (Arrays.equals(temp, key)){
 			win = true;
+			for (int i = 0; i < inKey.length; i++){
+				if (inKey[i]){
+					guesses[i] = true;
+				}
+			}
+		}
+		else{
+			numWrong = maxWrong;
 		}
 		complete = true;
-		checkWin();
 	}
 	
 	private static void checkComplete(){
 		boolean temp = true;
-		for (int i = 0; i < key.length; i++){
+		for (int i = 0; i < key.length; i++){ //TODO: change to reference inKey
 			if (!guesses[(int)key[i]]){
 				temp = false;
 			}
@@ -71,12 +92,15 @@ public class Main {
 				win = true;
 			}
 		}
+		if (numWrong == maxWrong){
+			complete = true;
+		}
 		if (complete){
-			checkWin();
+			printWin();
 		}
 	}
 		
-	public static void checkWin(){
+	private static void printWin(){
 		if (win){
 			System.out.println("Congrats! You guessed it!");
 		}
@@ -96,9 +120,44 @@ public class Main {
 		System.out.println();
 	}
 	
+	
+	/* 
+	 * +⏤⏤⏤+
+	 * ⎮     ┼    
+	 * ⎮    ( )
+	 * ⎮    \⎮/ 
+	 * ⎮     ⎮
+	 * ⎮    / \
+	 * ⎮
+	 * 
+	 * System.out.println("+⏤⏤⏤+\n⎮     ┼\n⎮    ( )\n⎮    \\⎮/\n⎮     ⎮\n⎮    / \\\n⎮\n");
+	*/
 	private static void printMan(){
 		//TODO: print dude
-		System.out.print("");
+		String hangman = "+⏤⏤⏤+\n⎮     ┼\n⎮    \n⎮    \n⎮     \n⎮    \n⎮\n";
+		switch(numWrong){
+			case 0:
+				break;
+			case 1:
+				hangman = "+⏤⏤⏤+\n⎮     ┼\n⎮    ( )\n⎮    \n⎮     \n⎮    \n⎮\n";
+				break;
+			case 2:
+				hangman = "+⏤⏤⏤+\n⎮     ┼\n⎮    ( )\n⎮     ⎮\n⎮     ⎮\n⎮    \n⎮\n";
+				break;
+			case 3:
+				hangman = "+⏤⏤⏤+\n⎮     ┼\n⎮    ( )\n⎮    \\⎮\n⎮     ⎮\n⎮    \n⎮\n";
+				break;
+			case 4:
+				hangman = "+⏤⏤⏤+\n⎮     ┼\n⎮    ( )\n⎮    \\⎮/\n⎮     ⎮\n⎮    \n⎮\n";
+				break;
+			case 5:
+				hangman = "+⏤⏤⏤+\n⎮     ┼\n⎮    ( )\n⎮    \\⎮/\n⎮     ⎮\n⎮    /\n⎮\n";
+				break;
+			case 6:
+				hangman = "+⏤⏤⏤+\n⎮     ┼\n⎮    ( )\n⎮    \\⎮/\n⎮     ⎮\n⎮    / \\\n⎮\n";
+				break;
+		}
+		System.out.println(hangman);
 	}
 	
 	private static void printBlanks(){
@@ -136,6 +195,13 @@ public class Main {
 			}
 			else if (temp.equals("Y") || temp.equals("y")){
 				complete = false;
+				numWrong = 0;
+				for (int i = 0; i < guesses.length; i++){
+					guesses[i] = false;
+				}
+				for (int i = 0; i < inKey.length; i++){
+					inKey[i] = false;
+				}
 				good = true;
 			}
 			else{
@@ -148,6 +214,7 @@ public class Main {
 		do{
 			System.out.print("Enter a key: ");
 			key = sc.nextLine().toCharArray();
+			initiateInKey();
 			System.out.println("\n\n\n\n\n\n\n\n\n");
 			printMan();
 			printBlanks();
