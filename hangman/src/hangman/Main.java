@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class Main {
 	
 	static boolean play = true;
-	static boolean[] guesses = new boolean[128]; //TODO: shorten guesses to an array of length 26
+	static boolean[] guesses = new boolean[26];
 	static boolean complete = false;
 	static boolean win = false;
 	static boolean quit = false;
@@ -14,47 +14,53 @@ public class Main {
 	static int maxWrong = 6; //TODO: update maxWrong according to difficulty
 	static Scanner sc = new Scanner(System.in);
 	static char[] key;
-	static boolean[] inKey = new boolean[91]; //TODO: shorten inKey to an array of length 26
+	static boolean[] inKey = new boolean[26];
+	
+	private static int charToIndex(char c){
+		return (int)(Character.toUpperCase(c)) - 65;
+	}
+	
+	private static char indexToChar(int i){
+		return (char)(i+65);
+	}
 	
 	private static void initiateInKey(){
-		char lowercase;
+		int index;
 		for (int i = 0; i < key.length; i++){
-			lowercase = Character.toUpperCase(key[i]);
-			inKey[(int)lowercase] = true;
+			index = charToIndex(key[i]);
+			inKey[index] = true;
 		}
 	}
 	
 	private static void promptGuess(){
-		String temp;
-		char lowercase, uppercase;
+		String response;
+		int index;
 		boolean good = false;
 		while (!good){
 			System.out.print("Guess: ");
-			temp = sc.nextLine();
-			if (temp.length() <= 0){
+			response = sc.nextLine();
+			if (response.length() <= 0){
 				System.out.println("Not a valid guess.");
 			}
-			else if (temp.length() > 1){
-				if (temp.toLowerCase().equals("quit")){
+			else if (response.length() > 1){
+				if (response.toLowerCase().equals("quit")){
 					play = false;
 					quit = true;
 					good = true;
 				}
 				else{	/* if the user guesses the full word/phrase */
-					checkComplete(temp);
+					checkComplete(response);
 					good = true;
 				}
 			}
 			else{
-				lowercase = temp.toLowerCase().charAt(0);
-				uppercase = temp.toUpperCase().charAt(0);
-				if (guesses[(int)lowercase]){
+				index = charToIndex(response.charAt(0));
+				if (guesses[index]){
 					System.out.println("You already guessed that letter!");
 				}
 				else{
-					guesses[(int)lowercase] = true;
-					guesses[(int)uppercase] = true;
-					if (!inKey[(int)uppercase]){
+					guesses[index] = true;
+					if (!inKey[index]){
 						numWrong++;
 					}
 					good = true;
@@ -81,8 +87,8 @@ public class Main {
 	
 	private static void checkComplete(){
 		boolean temp = true;
-		for (int i = 0; i < key.length; i++){ //TODO: change to reference inKey
-			if (!guesses[(int)key[i]]){
+		for (int i = 0; i < inKey.length; i++){
+			if (inKey[i] && !guesses[i]){
 				temp = false;
 			}
 		}
@@ -112,9 +118,9 @@ public class Main {
 	private static void printGuessedLetters(){
 		//TODO: pretty format
 		System.out.print("Letter Bank: ");
-		for (int i = 65; i < 91; i++){
+		for (int i = 0; i < guesses.length; i++){
 			if (guesses[i]){
-				System.out.print((char)i + " ");
+				System.out.print(indexToChar(i) + " ");
 			}
 		}
 		System.out.println();
@@ -133,7 +139,6 @@ public class Main {
 	 * System.out.println("+⏤⏤⏤+\n⎮     ┼\n⎮    ( )\n⎮    \\⎮/\n⎮     ⎮\n⎮    / \\\n⎮\n");
 	*/
 	private static void printMan(){
-		//TODO: print dude
 		String hangman = "+⏤⏤⏤+\n⎮     ┼\n⎮    \n⎮    \n⎮     \n⎮    \n⎮\n";
 		switch(numWrong){
 			case 0:
@@ -162,10 +167,11 @@ public class Main {
 	
 	private static void printBlanks(){
 		for (int i = 0; i < key.length; i++){
+			// If the char is not a letter (ASCII index between 65-90 or 97-122 inclusive), print the char
 			if (!(((int)key[i] >= 65 && (int)key[i] <= 90) || ((int)key[i] >= 97 && (int)key[i] <= 122))){
 				System.out.print(key[i]);
 			}
-			else if (guesses[(int)key[i]]){
+			else if (guesses[charToIndex(key[i])]){
 				System.out.print(key[i]);
 			}
 			else{
@@ -196,10 +202,9 @@ public class Main {
 			else if (temp.equals("Y") || temp.equals("y")){
 				complete = false;
 				numWrong = 0;
+				win = false;
 				for (int i = 0; i < guesses.length; i++){
 					guesses[i] = false;
-				}
-				for (int i = 0; i < inKey.length; i++){
 					inKey[i] = false;
 				}
 				good = true;
