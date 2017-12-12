@@ -15,6 +15,7 @@ A two-player hangman implementation: Player 1 (P1) sets the word/phrase for Play
 * **Play again:** At the end of each round, the game asks if the player would like to start a new puzzle.
 
 #### Pending Features:
+* **One-player mode:** Offer a choice between one-player or two-player mode before starting the game. One-player mode would choose a random word from a list of presets.
 * **Difficulty level:** After prompting for a key, prompt for a difficulty level. This feature would allow P1 to determine how many features should be added to the hangman before the game ends (i.e. basic stick figure, stick figure + face, stick figure + face + clothes, etc.).
 * **Free hints:** After prompting for a key, prompt for free hints. This feature would allow P1 to add hints that P2 can access to try to guess the key. Free hints do not cost a body part.
 * **Costly hints:** After prompting for a key and free hints, prompt for costly hints. This feature would allow P1 to add hints that P2 can access to try to guess the key. Accessing these hints costs 1 body part per hint.
