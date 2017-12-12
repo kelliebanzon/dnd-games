@@ -2,28 +2,36 @@ package hangman;
 
 import java.util.Arrays;
 import java.util.Scanner;
-
+//TODO: add appearance description to readme
 public class Main {
 	
-	static boolean play = true;
-	static boolean[] guesses = new boolean[26];
-	static boolean complete = false;
-	static boolean win = false;
-	static boolean quit = false;
-	static int numWrong = 0;
-	static int maxWrong = 6; //TODO: update maxWrong according to difficulty
+	static boolean play = true;	// whether to continue playing
+	static boolean[] guesses = new boolean[26]; // the letters that have been guessed
+	static boolean complete = false; // whether this round is over
+	static boolean win = false; // whether this round has been won or lost
+	static boolean quit = false; // whether the player has quit in the middle of the round
+	static int numWrong = 0; // the number of letters guessed incorrectly
+	static int maxWrong = 6; // the number of letters that can be guessed incorrectly before the game ends
+	// TODO: update maxWrong according to difficulty
 	static Scanner sc = new Scanner(System.in);
-	static char[] key;
-	static boolean[] inKey = new boolean[26];
+	static char[] key; // the answer to the puzzle
+	static boolean[] inKey = new boolean[26]; // the letters present in key (not case-sensitive)
 	
+	/* converts a char to an int between 0-26 inclusive representing its position in the alphabet
+	 * used to access guesses[] and inKey[]
+	 * char -> int */
 	private static int charToIndex(char c){
 		return (int)(Character.toUpperCase(c)) - 65;
 	}
 	
+	/* converts an int between 0-26 inclusive to an uppercase letter
+	 * used to print the letter bank
+	 * int -> char */
 	private static char indexToChar(int i){
 		return (char)(i+65);
 	}
 	
+	/* sets the indices of inKey to true based on which chars appear in the key */
 	private static void initiateInKey(){
 		int index;
 		for (int i = 0; i < key.length; i++){
@@ -32,6 +40,7 @@ public class Main {
 		}
 	}
 	
+	//TODO: finish descriptive comments
 	private static void promptGuess(){
 		String response;
 		int index;
