@@ -3,6 +3,7 @@ package hangman;
 import java.util.Arrays;
 import java.util.Scanner;
 //TODO: add appearance description to readme
+//TODO: add to readme features ability to quit mid-game
 public class Main {
 	
 	static boolean play = true;	// whether to continue playing
@@ -31,12 +32,20 @@ public class Main {
 		return (char)(i+65);
 	}
 	
-	/* sets the indices of inKey to true based on which chars appear in the key */
+	/* checks whether the char corresponding to the ASCII value of index is a letter */
+	private static boolean validLetter(int index){
+		return ((index >= 65 && index <= 90) || (index >= 97 && index <= 122));
+	}
+	
+	/* sets the indices of inKey to true based on which letters appear in the key
+	 * note: ignores chars that are not letters */
 	private static void initiateInKey(){
 		int index;
 		for (int i = 0; i < key.length; i++){
-			index = charToIndex(key[i]);
-			inKey[index] = true;
+			if (validLetter(key[i])){
+				index = charToIndex(key[i]);
+				inKey[index] = true;
+			}
 		}
 	}
 	
@@ -49,7 +58,7 @@ public class Main {
 			System.out.print("Guess: ");
 			response = sc.nextLine();
 			if (response.length() <= 0){
-				System.out.println("Not a valid guess.");
+				System.out.println("Not a valid guess. Please enter a letter.");
 			}
 			else if (response.length() > 1){
 				if (response.toLowerCase().equals("quit")){
@@ -58,21 +67,27 @@ public class Main {
 					good = true;
 				}
 				else{	/* if the user guesses the full word/phrase */
+					//TODO: check guess of eg. 55555 --> is this illegal input?
 					checkComplete(response);
 					good = true;
 				}
 			}
 			else{
 				index = charToIndex(response.charAt(0));
-				if (guesses[index]){
-					System.out.println("You already guessed that letter!");
+				if (!validLetter(response.charAt(0))){
+					System.out.println("Not a valid guess. Please enter a letter.");
 				}
 				else{
-					guesses[index] = true;
-					if (!inKey[index]){
-						numWrong++;
+					if (guesses[index]){
+						System.out.println("You already guessed that letter!");
 					}
-					good = true;
+					else{
+						guesses[index] = true;
+						if (!inKey[index]){
+							numWrong++;
+						}
+						good = true;
+					}
 				}
 			}
 		}
@@ -177,14 +192,14 @@ public class Main {
 	private static void printBlanks(){
 		for (int i = 0; i < key.length; i++){
 			// If the char is not a letter (ASCII index between 65-90 or 97-122 inclusive), print the char
-			if (!(((int)key[i] >= 65 && (int)key[i] <= 90) || ((int)key[i] >= 97 && (int)key[i] <= 122))){
+			if (!validLetter(key[i])){
 				System.out.print(key[i]);
 			}
 			else if (guesses[charToIndex(key[i])]){
 				System.out.print(key[i]);
 			}
 			else{
-				System.out.print("?");
+				System.out.print("_");
 			}
 		}
 		System.out.println("\n");
@@ -228,6 +243,8 @@ public class Main {
 		do{
 			System.out.print("Enter a key: ");
 			key = sc.nextLine().toCharArray();
+			//TODO: catch illegal values in key
+			//TODO: not accepting spaces either?
 			initiateInKey();
 			System.out.println("\n\n\n\n\n\n\n\n\n");
 			printMan();
