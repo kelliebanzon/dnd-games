@@ -3,7 +3,6 @@ package hangman;
 import java.util.Arrays;
 import java.util.Scanner;
 //TODO: add appearance description to readme
-//TODO: add to readme features ability to quit mid-game
 public class Main {
 	
 	static boolean play = true;	// whether to continue playing
@@ -14,7 +13,7 @@ public class Main {
 	static int numWrong = 0; // the number of letters guessed incorrectly
 	static int maxWrong = 6; // the number of letters that can be guessed incorrectly before the game ends
 	// TODO: update maxWrong according to difficulty
-	static Scanner sc = new Scanner(System.in);
+	static Scanner sc = new Scanner(System.in); // scanner to read user input
 	static char[] key; // the answer to the puzzle
 	static boolean[] inKey = new boolean[26]; // the letters present in key (not case-sensitive)
 	
@@ -32,7 +31,8 @@ public class Main {
 		return (char)(i+65);
 	}
 	
-	/* checks whether the char corresponding to the ASCII value of index is a letter */
+	/* checks whether the char corresponding to the ASCII value of index is a letter
+	 * int -> boolean */
 	private static boolean validLetter(int index){
 		return ((index >= 65 && index <= 90) || (index >= 97 && index <= 122));
 	}
@@ -50,6 +50,19 @@ public class Main {
 	}
 	
 	//TODO: finish descriptive comments
+	/* prompts for a guess repeatedly, until a valid guess is entered
+	 * if the guess is:
+	 * - empty: prints an error message, prompts again for a guess
+	 * - more than one char and if:
+	 *   + the guess is "quit": ends the game (sudden death)
+	 *   + otherwise: accepts the guess and checks whether it is correct
+	 * - a single char and if:
+	 *   + char is a non-letter symbol: prints an error message, prompts again for a guess
+	 *   + char is a letter and that letter has already been guessed: prints an error message,
+	 *     prompts again for a guess
+	 *   + char is a letter and that letter has not yet been guessed: accepts the guess, increments the
+	 *     number of incorrect guesses if that letter is not in the key
+	 *  */
 	private static void promptGuess(){
 		String response;
 		int index;
@@ -67,7 +80,6 @@ public class Main {
 					good = true;
 				}
 				else{	/* if the user guesses the full word/phrase */
-					//TODO: check guess of eg. 55555 --> is this illegal input?
 					checkComplete(response);
 					good = true;
 				}
@@ -129,7 +141,10 @@ public class Main {
 			printWin();
 		}
 	}
-		
+	
+	/* prints the result at the end of each round
+	 * - if the key is guessed: prints win message
+	 * - if the key is not guessed: prints lose message and the correct answer */
 	private static void printWin(){
 		if (win){
 			System.out.println("Congrats! You guessed it!");
@@ -144,6 +159,9 @@ public class Main {
 		}
 	}
 	
+	/* prints the letter bank of all the letters that have been guessed
+	 * if the correct key is guessed, the letter bank will update to include all the letters in the
+	 * key as well as the letter bank's previous contents */
 	private static void printGuessedLetters(){
 		//TODO: pretty format
 		System.out.print("Letter Bank: ");
@@ -194,6 +212,10 @@ public class Main {
 		System.out.println(hangman);
 	}
 	
+	/* prints the blanks in the key
+	 * - if the char is not a letter: prints the char
+	 * - if the char is a letter that has already been guessed: prints the letter, following the capitalization in key 
+	 * - if the char is a letter that has not yet been guessed: prints underscore (_) symbol in its place */
 	private static void printBlanks(){
 		for (int i = 0; i < key.length; i++){
 			// If the char is not a letter (ASCII index between 65-90 or 97-122 inclusive), print the char
