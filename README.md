@@ -12,6 +12,7 @@ A two-player hangman implementation: Player 1 (P1) sets the word/phrase for Play
   * If a letter is guessed incorrectly, it will add a limb to the hangman.
   * If a word/phrase is guessed correctly, the player wins and the round ends.
   * If a word/phrase is guessed incorrectly, the hangman dies instantly and the round ends.
+* **Quit mid-round:** Stop guessing at any point by entering "quit". Note: The quit command must be entered during the guessing phase. If "quit" is typed when the system prompts for a key, the game will use "quit" as the key to the puzzle and will not quit the round. 
 * **Play again:** At the end of each round, the game asks if the player would like to start a new puzzle.
 
 #### Pending Features:
