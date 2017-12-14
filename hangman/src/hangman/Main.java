@@ -136,6 +136,11 @@ public class Main {
 		}
 		else{
 			System.out.println("Incorrect! You lose!");
+			System.out.print("The correct answer was: ");
+			for (char c: key){
+				System.out.print(c);
+			}
+			System.out.println();
 		}
 	}
 	
@@ -243,8 +248,6 @@ public class Main {
 		do{
 			System.out.print("Enter a key: ");
 			key = sc.nextLine().toCharArray();
-			//TODO: catch illegal values in key
-			//TODO: not accepting spaces either?
 			initiateInKey();
 			System.out.println("\n\n\n\n\n\n\n\n\n");
 			printMan();
